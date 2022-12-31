@@ -1,0 +1,553 @@
+#:import sendRequest sendRequest
+
+<SelectableLabel>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<MyScreenManager>:
+    id: screen_manager
+    MainMenu:
+        id: mainmenu
+        name: 'MainMenu'
+        manager: screen_manager
+    AlarmLevels:
+        id: alarmlevels
+        name: 'AlarmLevels'
+        manager: screen_manager
+    AlarmLevelsCheck:
+        id: alarmlevelscheck
+        name: 'AlarmLevelsCheck'
+        manager: screen_manager
+    DACalculator:
+        id: dacalculator
+        name: 'DACalculator'
+        manager: screen_manager
+    DataPointTransmissionAudit:
+        id: datapointtransmissionaudit
+        name: 'DataPointTransmissionAudit'
+        manager: screen_manager
+    SystemAudits:
+        id: systemaudits
+        name: 'SystemAudits'
+        manager: screen_manager
+    SystemBuilderMain:
+        id: systembuilder
+        name: 'SystemBuilderMain'
+        manager: screen_manager
+    SystemEditorMain:
+        id: systemeditor
+        name: 'SystemEditorMain'
+        manager: screen_manager
+    SSAuditMain:
+        id: ssaudit
+        name: 'SSAuditMain'
+        manager: screen_manager
+    SensorAuditMain:
+        id: sensoraudit
+        name: 'SensorAuditMain'
+        manager: screen_manager
+    UpdateApp:
+        id: updateapp
+        name: 'UpdateApp'
+        manager: screen_manager
+    ChooseAccount:
+        id: chooseaccount
+        name: 'ChooseAccount'
+        manager: screen_manager
+    ChooseSystemSingle:
+        id: choosesystemsingle
+        name: 'ChooseSystemSingle'
+        manager: screen_manager
+    ChooseSystemMulti:
+        id: choosesystemmulti
+        name: 'ChooseSystemMulti'
+        manager: screen_manager
+    ChooseGroupMulti:
+        id: choosegroupmulti
+        name: 'ChooseGroupMulti'
+        manager: screen_manager
+    ProgressScreen:
+        id: progress
+        name: 'ProgressScreen'
+        manager: screen_manager
+    ProgressScreen2:
+        id: progress2
+        name: 'ProgressScreen2'
+        manager: screen_manager
+
+<MainMenu>:
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            on_release: root.manager.current = 'SystemEditorMain'
+            text: 'System Editor Tools'
+            font_size: 50
+        Button:
+            on_release: root.manager.current = 'SystemAudits'
+            text: 'System Audits'
+            font_size: 50
+        Button:
+            on_release: root.set_desired_roi_da_calculator()
+            text: 'ROI DA Calculator'
+            font_size: 50
+        Button:
+            text: 'Exit'
+            font_size: 50
+            on_release: app.stop()
+
+<SystemEditorMain>:
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            on_release: root.set_desired_system_builder()
+            text: 'System Builder'
+            font_size: 50
+        Button:
+            on_release: root.set_desired_alarm_setter()
+            text: 'Alarm Level Setter'
+            font_size: 50
+        Button:
+            text: 'Main Menu'
+            font_size: 50
+            on_release: root.manager.current = 'MainMenu'
+
+<SystemAudits>:
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            on_release: root.set_desired_ss_audit()
+            text: 'Signal Strength Audit'
+            font_size: 50
+        Button:
+            on_release: root.set_desired_data_point()
+            text: 'Data Point Transmission Audit'
+            font_size: 50
+        Button:
+            on_release: root.set_desired_sensor_audit()
+            text: 'Sensor Audit'
+            font_size: 50
+        Button:
+            text: 'Main Menu'
+            font_size: 50
+            on_release: root.manager.current = 'MainMenu'
+
+<AlarmLevels>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Welcome to the Alarm Level Setter code!\nThis generates alarms based on an indicator's 1 week trend.\nVersion 1.0"
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'SystemEditorMain'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<AlarmLevelsCheck>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Click the button below to review the Alarm Levels.xlsx file then click continue.\n Don't forget to save!"
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        Button:
+            id: open_alarm_levels
+            on_press: root.open_alarm_levels()
+            text: 'Open Excel Sheet'
+            font_size: 30
+            size_hint: 1, 0.1
+        Button:
+            id: script_continue_button
+            on_press: root.manager.current = 'ProgressScreen2'
+            text: 'Continue'
+            font_size: 30
+            size_hint: 1, 0.1
+
+<DACalculator>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Welcome to the ROI Damage Accumulation Calculator!\nThis generates an average damage value for each given asset class.\nVersion 1.0'
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'MainMenu'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<DataPointTransmissionAudit>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Welcome to the Data Point Transmission Audit!\nThis generates a report that gives a percentage of assets that achieve 50% data transmission.\nThis requires overall vibration indicators to be set!\nVersion 1.0'
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'MainMenu'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<SystemBuilderMain>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Welcome to the System Builder!\nVersion 1.0\nClick the button below to open and edit the excel sheet.\nDon't forget to save!"
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        Button:
+            id: open_asset_info
+            on_press: root.open_asset_info()
+            text: 'Open Excel Sheet'
+            font_size: 30
+            size_hint: 1, 0.1
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'SystemEditorMain'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<SSAuditMain>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Welcome to the Signal Strength Heat Map!\nThis generates an excel report of wireless efficiency and packet success rate\nThis is supposed to be used with the template provided on teams.\nVersion 1.0'
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'MainMenu'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<SensorAuditMain>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Welcome to the Sensor Audit!\nThis generates an excel report of the full navigation of all the monitoring points in a system along with their corresponding sensor numbers.\nRequires voltage indicators to be set.\nVersion 1.0'
+            font_size: 30
+            text_size: root.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                on_release: root.manager.current = 'MainMenu'
+                text: 'Previous Screen'
+                font_size: 30
+            Button:
+                id: script_continue_button
+                on_press: root.manager.ids.chooseaccount.load_accounts()
+                text: 'Continue'
+                font_size: 30
+
+<UpdateApp>:
+    on_enter: root.begin_bar()
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        Label:
+            id: pb_label
+            size_hint_x: 1
+            size_hint_y: 0.8
+            halign: "center"
+            valign: "middle"
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        ProgressBar:
+            id : pb
+            size_hint_x: 1
+            size_hint_y: 1
+            halign: "center"
+            valign: "middle"
+            min: 0
+
+<ChooseAccount>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Choose Account'
+            font_size: 30
+            halign: 'center'
+            size_hint: 1, 0.1
+        TextInput:
+            id: search_box1
+            hint_text: 'Search'
+            font_size: 30
+            multiline: False
+            focus: True
+            on_text: root.search()
+            on_text_validate: root.search()
+            size_hint: 1, 0.1
+            halign: 'center'
+            valign: 'middle'
+        RecycleView:
+            id: rv_chooseaccount
+            scroll_type: ['bars']
+            bar_width: 25
+            viewclass: 'SelectableLabel'
+            SelectableRecycleBoxLayout:
+                padding: 0,25,0,25
+                default_size: None, dp(25)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: ref_account
+                text: 'Previous Screen'
+                font_size: 30
+                on_release: root.choose_account_back_button()
+            Button:
+                id: continue_account
+                text: 'Continue'
+                font_size: 30
+                on_press: root.update_continue_button()
+
+<ChooseSystemSingle>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Choose the system you are interested in.'
+            font_size: 30
+            halign: 'center'
+            size_hint: 1, 0.1
+        RecycleView:
+            id: rv_choosesystem
+            scroll_type: ['bars']
+            bar_width: 25
+            viewclass: 'SelectableLabel'
+            SelectableRecycleBoxLayout:
+                padding: 0,25,0,25
+                default_size: None, dp(25)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: ref_system
+                text: 'Previous Screen'
+                font_size: 30
+                on_release: root.back_button()
+            Button:
+                id: continue_system
+                text: 'Continue'
+                font_size: 30
+                on_press: root.update_continue_button()
+
+<ChooseSystemMulti>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Choose all of the systems you are interested in'
+            font_size: 30
+            halign: 'center'
+            size_hint: 1, 0.1
+        RecycleView:
+            id: rv_choosesystem
+            scroll_type: ['bars']
+            bar_width: 25
+            viewclass: 'SelectableLabel'
+            SelectableRecycleBoxLayout:
+                padding: 0,25,0,25
+                default_size: None, dp(25)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: True
+                touch_multiselect: True
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: clear_all
+                text: 'Clear All'
+                font_size: 30
+                on_release: root.clear_all()
+            Button:
+                id: select_all
+                text: 'Select All'
+                font_size: 30
+                on_release: root.select_all()
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: ref_system
+                text: 'Previous Screen'
+                font_size: 30
+                on_release: root.back_button()
+            Button:
+                id: continue_system
+                text: 'Continue'
+                font_size: 30
+                on_press: root.update_continue_button()
+
+<ChooseGroupMulti>
+    on_enter: root.initialize_data()
+    BoxLayout:
+        orientation: 'vertical'
+        id: group_layout
+        Label:
+            id: group_label
+            size_hint: 1, 0.1
+            text_size: group_label.size
+            halign: "center"
+            valign: "middle"
+            padding_x: 10
+        RecycleView:
+            id: rv_choosegroup
+            scroll_type: ['bars']
+            bar_width: 25
+            viewclass: 'SelectableLabel'
+            SelectableRecycleBoxLayout:
+                padding: 0,25,0,25
+                default_size: None, dp(25)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: True
+                touch_multiselect: True
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: clear_all
+                text: 'Clear All'
+                font_size: 30
+                on_release: root.clear_all()
+            Button:
+                id: select_all
+                text: 'Select All'
+                font_size: 30
+                on_release: root.select_all()
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                text: 'Previous Screen'
+                font_size: 30
+                on_release: root.back_button()
+            Button:
+                text: 'Continue'
+                font_size: 30
+                on_press: root.update_continue_button()
+
+<ProgressScreen>:
+    on_enter: root.begin_bar()
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        Label:
+            id: pb_label
+            size_hint_x: 1
+            size_hint_y: 0.8
+            halign: "center"
+            valign: "middle"
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        ProgressBar:
+            id : pb
+            size_hint_x: 1
+            size_hint_y: 1
+            halign: "center"
+            valign: "middle"
+            min: 0
+
+<ProgressScreen2>:
+    on_enter: root.begin_bar()
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        Label:
+            id: pb_label
+            size_hint_x: 1
+            size_hint_y: 0.8
+            halign: "center"
+            valign: "middle"
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        ProgressBar:
+            id : pb
+            size_hint_x: 1
+            size_hint_y: 1
+            halign: "center"
+            valign: "middle"
+            min: 0
